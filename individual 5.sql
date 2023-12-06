@@ -1,6 +1,6 @@
 SQL> exec get_vehicle
 SET SERVEROUTPUT ON;
-
+//*two parameters, join, check*//
 -- Create the procedure
 CREATE OR REPLACE PROCEDURE get_vehicle(
   p_zone_id IN parking_zone.zone_id%TYPE,
