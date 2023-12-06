@@ -118,7 +118,52 @@ CREATE TABLE add_vehicles (
 INSERT INTO add_vehicles VALUES ('XYZ987','NY',1002, 'Ford', 'F-150',2022,'Blue');
 INSERT INTO add_vehicles  VALUES ('LVN123','NV',1003,'Tesla','Model 3' ,2021, 'BLACK');
 INSERT INTO add_vehicles VALUES ( 'ABC123', 'CA', 1001,'Toyota','Camry',2020, 'Red');
+//*Individual Feature 4*//
+    /*Feature 4*/
+SQL> exec get_parking_sessions
+SET SERVEROUTPUT ON;
 
+-- Create the procedure
+CREATE OR REPLACE PROCEDURE get_parking_sessions(
+  p_customer_id IN customers.customer_id%TYPE,
+  p_start_date IN DATE,
+  p_end_date IN DATE
+)
+IS
+BEGIN
+  FOR session_id IN (
+    SELECT *
+    FROM parking_sessions
+    WHERE customer_id = p_customer_id
+    AND start_time >= p_start_date
+    AND end_time <= p_end_date
+  )
+  LOOP
+    DBMS_OUTPUT.PUT_LINE('Session ID: '  session_rec.session_id);
+    DBMS_OUTPUT.PUT_LINE('Start Time: '  session_rec.start_time);
+    DBMS_OUTPUT.PUT_LINE('End Time: '  session_rec.end_time);
+    DBMS_OUTPUT.PUT_LINE('Zone ID: '  session_rec.zone_id);
+    DBMS_OUTPUT.PUT_LINE('Vehicle ID: '  session_rec.vehicle_id);
+    DBMS_OUTPUT.PUT_LINE('Total Charge: '  session_rec.total_charge);
+    DBMS_OUTPUT.PUT_LINE(''); END LOOP;
+END;
+/
+
+-- Execute the procedure
+DECLARE
+  p_customer_id customers.customer_id%TYPE := 1;
+  p_start_date DATE := TO_DATE('2021-05-01', 'YYYY-MM-DD'); 
+  p_end_date DATE := TO_DATE('2021-05-04', 'YYYY-MM-DD'); 
+  get_parking_sessions(p_customer_id, p_start_date, p_end_date); -- Call the procedure
+END;
+/
+
+-- Query to get the total charge
+SELECT SUM(total_charge) AS total_charge
+FROM parking_session
+WHERE customer_id = 1
+AND start_time >= TIMESTAMP '2021-05-01 00:00:00'
+AND end_time <= TIMESTAMP '2021-05-04 23:59:59';
 
 //*Group Feature 6*//
 DECLARE
