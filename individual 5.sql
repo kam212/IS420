@@ -1,5 +1,4 @@
-/*Feature 4*/
-SQL> exec get_vehicles
+SQL> exec get_vehicle
 SET SERVEROUTPUT ON;
 
 -- Create the procedure
@@ -18,11 +17,11 @@ BEGIN
     AND end_time <= p_end_date
   )
   LOOP
-    DBMS_OUTPUT.PUT_LINE('Zone ID: '  session_rec.session_id);
-    DBMS_OUTPUT.PUT_LINE('Start Time: '  session_rec.start_time);
-    DBMS_OUTPUT.PUT_LINE('End Time: '  session_rec.end_time);
-    DBMS_OUTPUT.PUT_LINE('Zone ID: '  session_rec.zone_id);
-    DBMS_OUTPUT.PUT_LINE('Vehicle ID: '  session_rec.vehicle_id);
+    DBMS_OUTPUT.PUT_LINE('Zone ID: '  parking_session.session_id);
+    DBMS_OUTPUT.PUT_LINE('Start Time: '  parking_session.start_time);
+    DBMS_OUTPUT.PUT_LINE('End Time: '  parking_session.end_time);
+    DBMS_OUTPUT.PUT_LINE('Zone ID: '  parking_session.zone_id);
+    DBMS_OUTPUT.PUT_LINE('Vehicle ID: '  parking_session.vehicle_id);
     DBMS_OUTPUT.PUT_LINE(''); END LOOP;
 END;
 /
@@ -37,8 +36,5 @@ END;
 /
 
 -- Query to get the vehicle info
-SELECT customer_id, license_PL, stat_v, maker_V, color
-FROM vehicle
-WHERE customer_id = '1234'
-AND start_time >= TIMESTAMP '2021-05-01 00:00:00'
-AND end_time <= TIMESTAMP '2021-05-04 23:59:59';
+SELECT license_PL, state_V, maker,model_V, color
+FROM vehicle;
