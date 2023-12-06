@@ -120,6 +120,7 @@ INSERT INTO add_vehicles  VALUES ('LVN123','NV',1003,'Tesla','Model 3' ,2021, '
 INSERT INTO add_vehicles VALUES ( 'ABC123', 'CA', 1001,'Toyota','Camry',2020, 'Red');
 //*Individual Feature 4*//
     /*Feature 4*/
+/*Feature 4*/
 SQL> exec get_parking_sessions
 SET SERVEROUTPUT ON;
 
@@ -133,18 +134,18 @@ IS
 BEGIN
   FOR session_id IN (
     SELECT *
-    FROM parking_sessions
+    FROM parking_session
     WHERE customer_id = p_customer_id
     AND start_time >= p_start_date
     AND end_time <= p_end_date
   )
   LOOP
-    DBMS_OUTPUT.PUT_LINE('Session ID: '  session_rec.session_id);
-    DBMS_OUTPUT.PUT_LINE('Start Time: '  session_rec.start_time);
-    DBMS_OUTPUT.PUT_LINE('End Time: '  session_rec.end_time);
-    DBMS_OUTPUT.PUT_LINE('Zone ID: '  session_rec.zone_id);
-    DBMS_OUTPUT.PUT_LINE('Vehicle ID: '  session_rec.vehicle_id);
-    DBMS_OUTPUT.PUT_LINE('Total Charge: '  session_rec.total_charge);
+    DBMS_OUTPUT.PUT_LINE('Session ID: '  parking_session.session_id);
+    DBMS_OUTPUT.PUT_LINE('Start Time: '  parking_session.start_time);
+    DBMS_OUTPUT.PUT_LINE('End Time: '  parking_session.end_time);
+    DBMS_OUTPUT.PUT_LINE('Zone ID: ' parking_session.zone_id);
+    DBMS_OUTPUT.PUT_LINE('Vehicle ID: '  parking_session.vehicle_id);
+    DBMS_OUTPUT.PUT_LINE('Total Charge: '  parking_session.total_charge);
     DBMS_OUTPUT.PUT_LINE(''); END LOOP;
 END;
 /
@@ -165,7 +166,7 @@ WHERE customer_id = 1
 AND start_time >= TIMESTAMP '2021-05-01 00:00:00'
 AND end_time <= TIMESTAMP '2021-05-04 23:59:59';
 
-//*Group Feature 6*//
+//*Group Feature 6*//////////////
 DECLARE
   v_customer_id NUMBER;
   v_vehicle_id VARCHAR2(30);
