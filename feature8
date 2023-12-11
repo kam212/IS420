@@ -1,0 +1,40 @@
+CREATE OR REPLACE PROCEDURE stop_parking_session(
+    p_session_id NUMBER,
+    p_current_time TIMESTAMP
+) AS
+    v_customer_id NUMBER;
+    v_end_time TIMESTAMP;
+BEGIN
+    -- Step 1: Check if the session ID is valid
+    SELECT customer_id, end_time
+    INTO v_customer_id, v_end_time
+    FROM parking_session
+    WHERE session_id = p_session_id;
+
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            -- Session ID not found
+            DBMS_OUTPUT.PUT_LINE('Invalid session ID');
+            RETURN;
+    
+    -- Step 2: Check if the current time is after the end time of the session
+    IF p_current_time > v_end_time THEN
+        -- Session expired, insert message into the message table
+        INSERT INTO message (message_id, message_body, message_time, customer_id)
+        VALUES (message_seq.NEXTVAL, 'Session ' || p_session_id || ' expired. You may get a ticket.', p_current_time, v_customer_id);
+
+    -- Step 3: If current time is no later than the end time, update the parking session and insert message
+    ELSE
+        -- Update the parking session end time
+        UPDATE parking_session
+        SET end_time = p_current_time
+        WHERE session_id = p_session_id;
+
+        -- Insert message into the message table
+        INSERT INTO message (message_id, message_body, message_time, customer_id)
+        VALUES (message_seq.NEXTVAL, 'Session ' || p_session_id || ' ends at ' || p_current_time, p_current_time, v_customer_id);
+    END IF;
+
+    DBMS_OUTPUT.PUT_LINE('Parking session stopped successfully.');
+END stop_parking_session;
+/
