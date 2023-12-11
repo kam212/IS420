@@ -1,40 +1,42 @@
-SQL> exec get_vehicle
-SET SERVEROUTPUT ON;
-//*two parameters, join, check*//
--- Create the procedure
-CREATE OR REPLACE PROCEDURE get_vehicle(
-  p_zone_id IN parking_zone.zone_id%TYPE,
-  p_start_date IN DATE,
-  p_end_date IN DATE
-)
-IS
-BEGIN
-  FOR session_id IN (
-    SELECT *
-    FROM parking_session
-    WHERE zone_id = p_zone_id
-    AND start_time >= p_start_date
-    AND end_time <= p_end_date
-  )
-  LOOP
-    DBMS_OUTPUT.PUT_LINE('Zone ID: '  parking_session.session_id);
-    DBMS_OUTPUT.PUT_LINE('Start Time: '  parking_session.start_time);
-    DBMS_OUTPUT.PUT_LINE('End Time: '  parking_session.end_time);
-    DBMS_OUTPUT.PUT_LINE('Zone ID: '  parking_session.zone_id);
-    DBMS_OUTPUT.PUT_LINE('Vehicle ID: '  parking_session.vehicle_id);
-    DBMS_OUTPUT.PUT_LINE(''); END LOOP;
-END;
-/
+create or replace procedure get_active_vehicle(v_zone_id varchar, v_vehicle_id int, v_num_vehicle  int)
+is
+v_count int;
 
--- Execute the procedure
-DECLARE
-  p_customer_id customers.customer_id%TYPE := 1;
-  p_start_date DATE := TO_DATE('2021-05-01', 'YYYY-MM-DD'); 
-  p_end_date DATE := TO_DATE('2021-05-04', 'YYYY-MM-DD'); 
-  get_parking_sessions(p_customer_id, p_start_date, p_end_date); -- Call the procedure
-END;
-/
+begin
+  select count(*) into v_count from parking_session where zone_id = v_zone_id;
+  if v_count = 0 then 
+    dbms_output.put_line('Invalid zone id');
+else 
+  select count(*) into v_num_vehicle
+  from parking_session 
+  where vehicle_id = v_vehicle_id;
+  
+end if;
+end;
+declare
+  v_num_vehicle int;
+  begin 
+    get_active_vehicle (v_num_vehicle);
+    if v_num_vehicle > 0 then 
+      dbms_output.put_line('This vehicle is active:' || 'v_num_vehicle');
+   end;
 
--- Query to get the vehicle info
-SELECT license_PL, state_V, maker,model_V, color
-FROM vehicle;
+   /
+  
+
+
+/*list all vehicles with an active session at a parking zone. The input is a
+
+parking zone ID and a current time. The feature does the following steps:
+
+1) it first checks whether the zone ID is valid (there is a row in the parking_zone table
+
+with the input zone ID). If not, print an error message 'Incorrect zone ID' and stop.
+
+2) it then lists all vehicles with an active parking session in this zone. An active session
+
+means that the input current time is between the session's start time and end time.
+
+Please print out vehicle Id, customer ID, plate number, state, maker, model, and color*/
+
+
