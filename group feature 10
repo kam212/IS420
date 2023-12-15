@@ -1,0 +1,21 @@
+SET SERVEROUTPUT ON;
+CREATE OR REPLACE PROCEDURE print_info(
+ p_start_time TIMESTAMP)
+ IS 
+ r_customer customer%ROWTYPE;
+ BEGIN
+ SELECT
+   *
+ INTO 
+  r_customer
+  FROM parking_session
+  WHERE 
+  start_time = p_start_time;
+  --printing information--
+  DBMS_OUTPUT.PUT_LINE(r_customer.customer_id);
+  EXCEPTION 
+  WHEN OTHERS THEN 
+  DBMS_OUTPUT.PUT_LINE(SQLERRM);
+  END;
+  
+  
