@@ -19,6 +19,7 @@ declare
     get_active_vehicle (v_num_vehicle);
     if v_num_vehicle > 0 then 
       dbms_output.put_line('This vehicle is active:' || 'v_num_vehicle');
+end if
    end;
 
    /
