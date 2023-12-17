@@ -1,22 +1,27 @@
 SET SERVEROUTPUT ON;
-CREATE OR REPLACE PROCEDURE QUERY_PRINT
- (
- p_start_time parking_session.parking_session%TYPE,
- p_customer_id OUT customer.customer_id%TYPE,
- p_vehicle_id OUT vehicle.vehicle_id%TYPE,
- p_zone_id OUT parking_session%TYPE
- )
- IS
- BEGIN
-    SELECT customer_id, vehicle_id, zone_id
-    INTO p_customer_id, p_vehicle_id, p_zone_id
-    FROM parking_session, customer, vehicle
-    WHERE start_time=p_start_time;
-    EXCEPTION 
-    WHEN OTHERS THEN 
-    DBMS_OUTPUT.PUT_LINE(SQLCODE);
-    DBMS_OUTPUT.PUT_LINE(SQLERRM);
-END;
+CREATE OR REPLACE PROCEDURE print_stats (v_start_time parking_session.start_time%type,
+ v_customer_id OUT customer.customer_id%TYPE,
+ v_vehicle_id OUT vehicle.vehicle_id%TYPE,
+ v_zone_id OUT parking_session.zone_id%TYPE
+)
+IS
+
+CURSOR c1 
+is
+select v_customer_id, v_zone_id, v_vehicle_id
+from customer c, parking_session ps, vehicle v
+where c.customer_id = ps.customer_id and v.vehicle_id=ps.vehicle_id;
+v_count int; 
+begin 
+select count(*) into v_count from parking_session where start_time = v_start_time;
+if v_count = 0 then 
+ dbms_output.put_line('No such time');
+ else
+ for item in c1 loop
+ dbms_output.put_line(v_start_time);
+ end loop;
+ end if;
+ end;
     
     
  
